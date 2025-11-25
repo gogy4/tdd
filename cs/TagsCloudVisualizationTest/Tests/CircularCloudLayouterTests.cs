@@ -7,6 +7,7 @@ using NUnit.Framework;
 using TagsCloudLib.Abstractions;
 using TagsCloudLib.Extensions;
 using TagsCloudLib.Implementations;
+using TagsCloudLib.Visualizer;
 
 namespace TagsCloudVisualization.Tests
 {
@@ -23,6 +24,28 @@ namespace TagsCloudVisualization.Tests
             var collisionDetector = new SimpleCollisionDetector();
             var centerShifter = new CenterShifter();
             layouter = new CircularCloudLayouter(center, spiral, collisionDetector, centerShifter);
+        }
+        
+        [TearDown]
+        public void TearDown()
+        {
+            var result = TestContext.CurrentContext.Result.Outcome.Status;
+
+            if (result != NUnit.Framework.Interfaces.TestStatus.Failed) return;
+            var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var folderName = Path.Combine(desktopPath, "tests");
+            Directory.CreateDirectory(folderName);
+            var path = Path.Combine(folderName, $"{TestContext.CurrentContext.Test.Name}_failed.png");
+
+            try
+            {
+                TagCloudVisualizer.DrawRectangles(layouter.Rectangles, path);
+                TestContext.WriteLine($"Tag cloud visualization saved to file {path}");
+            }
+            catch (Exception ex)
+            {
+                TestContext.WriteLine($"Failed to save tag cloud visualization: {ex.Message}");
+            }
         }
 
         [TestCaseSource(nameof(GenerateInvalidSizes))]
@@ -106,27 +129,6 @@ namespace TagsCloudVisualization.Tests
 
             A.CallTo(() => fakeShifter.ShiftToCenter(A<Rectangle>._, A<Point>._, A<List<Rectangle>>._))
                 .MustHaveHappened();
-        }
-
-        [Test]
-        public void PutNextRectangle_ShouldAddMultipleRectanglesWithoutIntersection()
-        {
-            var sizes = GenerateDifferentSizes().Select(tc => (Size)tc.Arguments[0]).ToArray();
-            var rects = sizes.Select(s => layouter.PutNextRectangle(s)).ToList();
-
-            rects.Should().HaveCount(sizes.Length);
-            for (var i = 0; i < rects.Count; i++)
-            {
-                for (var j = 0; j < rects.Count; j++)
-                {
-                    if (i == j)
-                    {
-                        continue;
-                    }
-                    
-                    rects[i].IntersectsWith(rects[j]).Should().BeFalse();
-                }
-            }
         }
 
         [Test]

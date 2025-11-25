@@ -3,7 +3,7 @@ using System.Drawing.Imaging;
 
 namespace TagsCloudLib.Visualizer;
 
-public class TagCloudVisualizer
+public static class TagCloudVisualizer
 {
     public static void DrawRectangles(IEnumerable<Rectangle> rectangles, string outputPath, int width = 1500, 
         int height = 1500)

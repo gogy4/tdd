@@ -9,6 +9,7 @@ class Program
     {
         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var folderName = Path.Combine(desktopPath, "results");
+        Directory.CreateDirectory(folderName);
         
         GenerateExample("cloud1.png", new Size(20, 20), 100, folderName);
         GenerateExample("cloud2.png", new Size(5, 15), 250, folderName);
