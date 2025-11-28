@@ -15,15 +15,24 @@ namespace TagsCloudVisualization.Tests
     public class CircularCloudLayouterTests
     {
         private CircularCloudLayouter layouter;
+        private TagCloudVisualizationConfig config;
 
         [SetUp]
         public void SetUp()
         {
             var center = new Point(0, 0);
             var spiral = new ArchimedeanSpiral(center);
-            var collisionDetector = new SimpleCollisionDetector();
             var centerShifter = new CenterShifter();
-            layouter = new CircularCloudLayouter(center, spiral, collisionDetector, centerShifter);
+            layouter = new CircularCloudLayouter(center, spiral, centerShifter);
+            config = new TagCloudVisualizationConfig
+            {
+                Width = 3000,
+                Height = 3000,
+                BackgroundColor = Color.Black,
+                BorderColor = Color.Cyan,    
+                BorderThickness = 3,
+                FillColor = Color.FromArgb(80, Color.Cyan)
+            };
         }
         
         [TearDown]
@@ -39,7 +48,7 @@ namespace TagsCloudVisualization.Tests
 
             try
             {
-                TagCloudVisualizer.DrawRectangles(layouter.Rectangles, path);
+                TagCloudVisualizer.DrawRectangles(layouter.Rectangles, path, config);
                 TestContext.WriteLine($"Tag cloud visualization saved to file {path}");
             }
             catch (Exception ex)
@@ -73,7 +82,6 @@ namespace TagsCloudVisualization.Tests
             var fakeLayouter = new CircularCloudLayouter(
                 new Point(0, 0),
                 fakeSpiral,
-                new SimpleCollisionDetector(),
                 new CenterShifter()
             );
 
@@ -121,7 +129,6 @@ namespace TagsCloudVisualization.Tests
             var layouterWithFake = new CircularCloudLayouter(
                 new Point(0, 0),
                 fakeSpiral,
-                new SimpleCollisionDetector(),
                 fakeShifter
             );
 
@@ -150,7 +157,6 @@ namespace TagsCloudVisualization.Tests
             var layouterWithFake = new CircularCloudLayouter(
                 new Point(0, 0),
                 fakeSpiral,
-                new SimpleCollisionDetector(),
                 fakeShifter
             );
 

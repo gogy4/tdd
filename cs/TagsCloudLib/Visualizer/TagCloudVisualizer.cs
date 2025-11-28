@@ -1,24 +1,29 @@
 ﻿using System.Drawing;
 using System.Drawing.Imaging;
-
-namespace TagsCloudLib.Visualizer;
+using TagsCloudLib.Visualizer;
 
 public static class TagCloudVisualizer
 {
-    public static void DrawRectangles(IEnumerable<Rectangle> rectangles, string outputPath, int width = 1500, 
-        int height = 1500)
+    public static void DrawRectangles(IEnumerable<Rectangle> rectangles, string outputPath, 
+        TagCloudVisualizationConfig config)
     {
-        using var bitmap = new Bitmap(width, height);
+        using var bitmap = new Bitmap(config.Width, config.Height);
         using var graphics = Graphics.FromImage(bitmap);
 
-        graphics.Clear(Color.White);
-        using var pen = new Pen(Color.Blue, 2);
-        using var brush = new SolidBrush(Color.FromArgb(80, Color.CornflowerBlue));
+        graphics.Clear(config.BackgroundColor);
+
+        using var pen = new Pen(config.BorderColor, config.BorderThickness);
+        using var brush = new SolidBrush(config.FillColor);
 
         foreach (var rect in rectangles)
         {
-            var shifted = Shift(rect, width / 2, height / 2);
-            graphics.FillRectangle(brush, shifted);
+            var shifted = Shift(rect, config.Width / 2, config.Height / 2);
+
+            if (config.UseFill)
+            {
+                graphics.FillRectangle(brush, shifted);
+            }
+
             graphics.DrawRectangle(pen, shifted);
         }
 
@@ -27,10 +32,6 @@ public static class TagCloudVisualizer
 
     private static Rectangle Shift(Rectangle rect, int shiftX, int shiftY)
     {
-        return new Rectangle(
-            rect.X + shiftX,
-            rect.Y + shiftY,
-            rect.Width,
-            rect.Height);
+        return new Rectangle(rect.X + shiftX, rect.Y + shiftY, rect.Width, rect.Height);
     }
 }

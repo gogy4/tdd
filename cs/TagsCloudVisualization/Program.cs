@@ -5,34 +5,49 @@ using TagsCloudLib.Visualizer;
 
 class Program
 {
+    private static readonly Random Random = new();
+    private static TagCloudVisualizationConfig config;
+
     static void Main()
     {
         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var folderName = Path.Combine(desktopPath, "results");
         Directory.CreateDirectory(folderName);
-        
-        GenerateExample("cloud1.png", new Size(20, 20), 100, folderName);
-        GenerateExample("cloud2.png", new Size(5, 15), 250, folderName);
-        GenerateExample("cloud3.png", new Size(10, 40), 1000, folderName);
+        config = new TagCloudVisualizationConfig
+        {
+            Width = 3000,
+            Height = 3000,
+            BackgroundColor = Color.Black,
+            BorderColor = Color.Cyan,    
+            BorderThickness = 3,
+            FillColor = Color.FromArgb(80, Color.Cyan)
+        };
+        GenerateExample("cloud1", 100, folderName);
+        GenerateExample("cloud2", 250, folderName);
+        GenerateExample("cloud3", 1000, folderName);
 
         Console.WriteLine($"Изображения сохранены по пути {folderName}");
     }
 
-    private static void GenerateExample(string fileName, Size size, int count, string folderName)
+
+    private static void GenerateExample(string fileName, int count, string folderName)
     {
         var center = new Point(0, 0);
         var spiral = new ArchimedeanSpiral(center);
-        var collisionDetector = new SimpleCollisionDetector();
         var centerShifter = new CenterShifter();
-        var layouter = new CircularCloudLayouter(center, spiral, collisionDetector, centerShifter);
+        var layouter = new CircularCloudLayouter(center, spiral, centerShifter);
 
         for (var i = 0; i < count; i++)
         {
+            var size = new Size(
+                Random.Next(5, 50),  
+                Random.Next(5, 50));
+
             layouter.PutNextRectangle(size);
         }
-        
+
         var path = Path.Combine(folderName, $"{fileName}_success.png");
-        
-        TagCloudVisualizer.DrawRectangles(layouter.Rectangles, path);
+        TagCloudVisualizer.DrawRectangles(layouter.Rectangles, path, config);
     }
+
 }
