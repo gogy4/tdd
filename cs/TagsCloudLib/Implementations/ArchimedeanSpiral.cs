@@ -3,16 +3,15 @@ using TagsCloudLib.Abstractions;
 
 namespace TagsCloudLib.Implementations;
 
-public class ArchimedeanSpiral(Point center) : ISpiral
+public class ArchimedeanSpiral(Point center, double spiralStep = 0.2, double radiusStep = 0.5)
+    : ISpiral
 {
     private double angle;
-    private const double SpiralStep = 0.2;
-    private const double RadiusStep = 0.5;
 
     public Point GetNextPoint()
     {
-        angle += SpiralStep;
-        var radius = RadiusStep * angle;
+        angle += spiralStep;
+        var radius = radiusStep * angle;
         var x = (int)(center.X + radius * Math.Cos(angle));
         var y = (int)(center.Y + radius * Math.Sin(angle));
         return new Point(x, y);

@@ -9,7 +9,10 @@ public class CenterShifter : ICenterShifter
     {
         var dx = Math.Sign(center.X - (rectangle.X + rectangle.Width / 2));
         var dy = Math.Sign(center.Y - (rectangle.Y + rectangle.Height / 2));
-        if (dx == 0 && dy == 0) return rectangle;
+        if (dx == 0 && dy == 0)
+        {
+            return rectangle;
+        }
 
         while (true)
         {
