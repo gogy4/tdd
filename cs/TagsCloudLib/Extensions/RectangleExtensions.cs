@@ -8,4 +8,9 @@ public static class RectangleExtensions
     {
         return new Point(rectangle.X + rectangle.Width / 2, rectangle.Y + rectangle.Height / 2);
     }
+    
+    public static bool Intersects(this Rectangle rectangle, IEnumerable<Rectangle> others)
+    {
+        return others.Any(r => r.IntersectsWith(rectangle));
+    }
 }
