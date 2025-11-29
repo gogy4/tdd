@@ -15,12 +15,12 @@ class Program
         Directory.CreateDirectory(folderName);
         config = new TagCloudVisualizationConfig
         {
-            Width = 3000,
-            Height = 3000,
-            BackgroundColor = Color.Black,
-            BorderColor = Color.Cyan,    
-            BorderThickness = 3,
-            FillColor = Color.FromArgb(80, Color.Cyan)
+            CanvasWidth = 3000,
+            CanvasHeight = 3000,
+            CanvasBackgroundColor = Color.Black,
+            ShapeBorderColor = Color.Cyan,    
+            ShapeBorderThickness = 3,
+            ShapeFillColor = Color.FromArgb(80, Color.Cyan)
         };
         GenerateExample("cloud1", 100, folderName);
         GenerateExample("cloud2", 250, folderName);

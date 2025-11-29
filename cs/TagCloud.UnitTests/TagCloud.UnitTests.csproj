@@ -4,7 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>TagsCloudVisualization</RootNamespace>
+        <RootNamespace>TagCloud.Visualization</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,6 +17,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\TagsCloudLib\TagsCloudLib.csproj" />
+      <ProjectReference Include="..\TagCloud.Core\TagCloud.Core.csproj" />
     </ItemGroup>
 </Project>

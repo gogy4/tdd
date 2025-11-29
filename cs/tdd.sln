@@ -7,11 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BowlingGame", "BowlingGame\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Samples", "Samples\Samples.csproj", "{B5108E20-2ACF-4ED9-84FE-2A718050FC94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagsCloudVisualizationTest", "TagsCloudVisualizationTest\TagsCloudVisualizationTest.csproj", "{F0BDF13B-13AE-49B3-BDB9-750EE0EA4CD9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagCloud.UnitTests", "TagCloud.UnitTests\TagCloud.UnitTests.csproj", "{F0BDF13B-13AE-49B3-BDB9-750EE0EA4CD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagsCloudVisualization", "TagsCloudVisualization\TagsCloudVisualization.csproj", "{4DAD703E-2E5E-427D-AAD3-D9A0A40F9FA2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagCloud.Visualization", "TagCloud.Visualization\TagCloud.Visualization.csproj", "{4DAD703E-2E5E-427D-AAD3-D9A0A40F9FA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagsCloudLib", "TagsCloudLib\TagsCloudLib.csproj", "{B91F2267-1137-406F-887A-E0A6B9115F24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TagCloud.Core", "TagCloud.Core\TagCloud.Core.csproj", "{B91F2267-1137-406F-887A-E0A6B9115F24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
