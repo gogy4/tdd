@@ -7,7 +7,6 @@ namespace TagsCloudLib.Implementations;
 public class CircularCloudLayouter(Point center, ISpiral spiral, ICenterShifter centerShifter, int maxAttempts = 1000)
     : CircularCloudLayouterBase(center)
 {
-
     public override Rectangle PutNextRectangle(Size size)
     {
         if (size.Width <= 0 || size.Height <= 0)
@@ -42,6 +41,5 @@ public class CircularCloudLayouter(Point center, ISpiral spiral, ICenterShifter 
     private static Rectangle CreateRectangleCenteredAt(Point center, Size size)
     {
         return new Rectangle(center.X - size.Width / 2, center.Y - size.Height / 2, size.Width, size.Height);
-
     }
 }

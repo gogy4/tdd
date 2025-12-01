@@ -1,27 +1,42 @@
 ﻿using System.Drawing;
+using Microsoft.Extensions.DependencyInjection;
+using TagsCloudLib;
+using TagsCloudLib.Abstractions;
+using TagsCloudLib.Abstractions.Factories;
 using TagsCloudLib.Implementations;
-using TagsCloudLib.Visualizer;
 
 
 class Program
 {
     private static readonly Random Random = new();
     private static TagCloudVisualizationConfig config;
+    private static CircularCloudLayouterBase layouter;
+    private static TagCloudVisualizer visualizer;
 
     static void Main()
     {
+        var services = new ServiceCollection();
         var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         var folderName = Path.Combine(desktopPath, "results");
         Directory.CreateDirectory(folderName);
+        
         config = new TagCloudVisualizationConfig
         {
-            CanvasWidth = 3000,
-            CanvasHeight = 3000,
             CanvasBackgroundColor = Color.Black,
             ShapeBorderColor = Color.Cyan,    
             ShapeBorderThickness = 3,
-            ShapeFillColor = Color.FromArgb(80, Color.Cyan)
+            ShapeFillColor = Color.FromArgb(80, Color.Cyan),
+            AutoResize = true,
         };
+        
+        services.AddTagCloudServices(config);
+        
+        var center = new Point(0, 0);
+        var provider = services.BuildServiceProvider();
+        var layouterFactory = provider.GetRequiredService<ILayouterFactory>();
+        layouter = layouterFactory.Create(center);
+        visualizer = provider.GetRequiredService<TagCloudVisualizer>();
+        
         GenerateExample("cloud1", 100, folderName);
         GenerateExample("cloud2", 250, folderName);
         GenerateExample("cloud3", 1000, folderName);
@@ -32,22 +47,15 @@ class Program
 
     private static void GenerateExample(string fileName, int count, string folderName)
     {
-        var center = new Point(0, 0);
-        var spiral = new ArchimedeanSpiral(center);
-        var centerShifter = new CenterShifter();
-        var layouter = new CircularCloudLayouter(center, spiral, centerShifter);
-
         for (var i = 0; i < count; i++)
         {
-            var size = new Size(
-                Random.Next(5, 50),  
-                Random.Next(5, 50));
+            var size = new Size(Random.Next(5, 50), Random.Next(5, 50));
 
             layouter.PutNextRectangle(size);
         }
 
         var path = Path.Combine(folderName, $"{fileName}_success.png");
-        TagCloudVisualizer.DrawRectangles(layouter.Rectangles, path, config);
+        visualizer.Draw(layouter.Rectangles, path, config);
     }
 
 }

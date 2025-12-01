@@ -3,27 +3,29 @@ using System.Linq;
 using System.Collections.Generic;
 using FakeItEasy;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
+using TagsCloudLib;
 using TagsCloudLib.Abstractions;
+using TagsCloudLib.Abstractions.Factories;
 using TagsCloudLib.Extensions;
 using TagsCloudLib.Implementations;
-using TagsCloudLib.Visualizer;
+using TagsCloudLib.Implementations.Visualizer;
 
 namespace TagsCloudVisualization.Tests;
 
 [TestFixture]
 public class CircularCloudLayouterTests
 {
-    private CircularCloudLayouter layouter;
+    private CircularCloudLayouterBase layouter;
+    private TagCloudVisualizer visualizer;
     private TagCloudVisualizationConfig config;
-
+    
     [SetUp]
     public void SetUp()
     {
+        var services = new ServiceCollection();
         var center = new Point(0, 0);
-        var spiral = new ArchimedeanSpiral(center);
-        var centerShifter = new CenterShifter();
-        layouter = new CircularCloudLayouter(center, spiral, centerShifter);
         config = new TagCloudVisualizationConfig
         {
             CanvasWidth = 3000,
@@ -33,7 +35,14 @@ public class CircularCloudLayouterTests
             ShapeBorderThickness = 3,
             ShapeFillColor = Color.FromArgb(80, Color.Cyan)
         };
+        services.AddTagCloudServices(config);
+        var provider = services.BuildServiceProvider();
+        var layouterFactory = provider.GetRequiredService<ILayouterFactory>();
+        layouter = layouterFactory.Create(center);
+        visualizer = provider.GetRequiredService<TagCloudVisualizer>();
     }
+    
+
 
     [TearDown]
     public void TearDown()
@@ -48,7 +57,7 @@ public class CircularCloudLayouterTests
 
         try
         {
-            TagCloudVisualizer.DrawRectangles(layouter.Rectangles, path, config);
+            visualizer.Draw(layouter.Rectangles, path, config);
             TestContext.WriteLine($"Tag cloud visualization saved to file {path}");
         }
         catch (Exception ex)
@@ -169,7 +178,7 @@ public class CircularCloudLayouterTests
     {
         yield return new TestCaseData(1)
             .SetName("PutNextRectangle_SingleRectangle_NoIntersection")
-            .SetDescription("Placing a single rectangle should succeed without intersections.");
+            .SetDescription("Placing LayouterFactory single rectangle should succeed without intersections.");
         yield return new TestCaseData(2)
             .SetName("PutNextRectangle_TwoRectangles_NoIntersection")
             .SetDescription("Placing two rectangles should succeed without intersections.");

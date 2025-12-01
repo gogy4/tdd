@@ -1,37 +1,33 @@
 ﻿using System.Drawing;
-using System.Drawing.Imaging;
-using TagsCloudLib.Visualizer;
+using TagsCloudLib.Abstractions.Visualizer;
+using TagsCloudLib.Models;
 
-public static class TagCloudVisualizer
+public class TagCloudVisualizer(
+    IBoundingBoxCalculator bboxCalc,
+    ICanvasSizeCalculator canvasCalc,
+    IScalingCalculator scaleCalc,
+    ICoordinateTransformer transformer,
+    IRender renderer)
 {
-    public static void DrawRectangles(IEnumerable<Rectangle> rectangles, string outputPath, 
-        TagCloudVisualizationConfig config)
+    public void Draw(IEnumerable<Rectangle> rectangles, string outputPath, TagCloudVisualizationConfig config)
     {
-        using var bitmap = new Bitmap(config.CanvasWidth, config.CanvasHeight);
-        using var graphics = Graphics.FromImage(bitmap);
+        var rects = rectangles.ToList();
 
-        graphics.Clear(config.CanvasBackgroundColor);
-
-        using var pen = new Pen(config.ShapeBorderColor, config.ShapeBorderThickness);
-        using var brush = new SolidBrush(config.ShapeFillColor);
-
-        foreach (var rect in rectangles)
+        if (rects.Count == 0)
         {
-            var shifted = Shift(rect, config.CanvasWidth / 2, config.CanvasHeight / 2);
-
-            if (config.ShapeUseFill)
-            {
-                graphics.FillRectangle(brush, shifted);
-            }
-
-            graphics.DrawRectangle(pen, shifted);
+            renderer.Render(new TransformResult([], 1f), new CanvasSize(config.CanvasWidth, config.CanvasHeight),
+                config,
+                outputPath
+            );
+            return;
         }
 
-        bitmap.Save(outputPath, ImageFormat.Png);
-    }
+        var bounds = bboxCalc.Calculate(rects);
+        var canvas = canvasCalc.Calculate(bounds, config);
+        var scale = scaleCalc.CalculateScale(bounds, canvas, config);
 
-    private static Rectangle Shift(Rectangle rect, int shiftX, int shiftY)
-    {
-        return new Rectangle(rect.X + shiftX, rect.Y + shiftY, rect.Width, rect.Height);
+        var transformResult = transformer.Transform(rects.ToArray(), bounds, canvas, config, scale);
+
+        renderer.Render(transformResult, canvas, config, outputPath);
     }
 }
