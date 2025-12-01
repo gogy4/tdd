@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using TagsCloudLib;
 using TagsCloudLib.Abstractions;
 using TagsCloudLib.Abstractions.Factories;
-using TagsCloudLib.Implementations;
 
 
 class Program
@@ -16,8 +15,9 @@ class Program
     static void Main()
     {
         var services = new ServiceCollection();
-        var desktopPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-        var folderName = Path.Combine(desktopPath, "results");
+        var exeFolder = AppContext.BaseDirectory;
+        var projectRoot = Path.GetFullPath(Path.Combine(exeFolder, @"..\..\.."));
+        var folderName = Path.Combine(projectRoot, "Images");
         Directory.CreateDirectory(folderName);
         
         config = new TagCloudVisualizationConfig
